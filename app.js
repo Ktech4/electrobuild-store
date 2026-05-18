@@ -1,11 +1,41 @@
+const defaultProjectIdeas = [
+  {
+    title: "Line Follower Robot",
+    description: "Chassis, sensors, motor driver, code, and calibration guide."
+  },
+  {
+    title: "IoT Weather Station",
+    description: "DHT sensor, OLED display, ESP8266, web dashboard, and enclosure plan."
+  },
+  {
+    title: "RFID Attendance System",
+    description: "RFID module, LCD, buzzer, Google Sheet logging, and support video."
+  }
+];
+
 function getStoreData() {
+  const defaultData = window.STORE_DATA || {};
   try {
     const savedData = localStorage.getItem("STORE_DATA_OVERRIDE");
-    if (savedData) return JSON.parse(savedData);
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      return {
+        ...defaultData,
+        ...parsedData,
+        featuredProject: {
+          ...(defaultData.featuredProject || {}),
+          ...(parsedData.featuredProject || {})
+        },
+        products: parsedData.products?.length ? parsedData.products : defaultData.products || [],
+        projectIdeas: parsedData.projectIdeas?.length
+          ? parsedData.projectIdeas
+          : defaultData.projectIdeas || defaultProjectIdeas
+      };
+    }
   } catch (error) {
     console.warn("Could not load saved admin preview data.", error);
   }
-  return window.STORE_DATA || {};
+  return defaultData;
 }
 
 const storeData = getStoreData();
@@ -21,6 +51,9 @@ const cartItems = document.querySelector("#cartItems");
 const cartTotal = document.querySelector("#cartTotal");
 const cartCount = document.querySelector("#cartCount");
 const featureButton = document.querySelector("[data-add-feature]");
+const projectList = document.querySelector("#projectList");
+const sendWhatsappEnquiry = document.querySelector("#sendWhatsappEnquiry");
+const sendEmailEnquiry = document.querySelector("#sendEmailEnquiry");
 
 let activeFilter = "all";
 let cart = [];
@@ -40,6 +73,7 @@ function setHref(selector, value) {
 function applyStoreContent() {
   const brandName = storeData.brandName || "ElectroBuild";
   const brandSubtitle = storeData.brandSubtitle || "Projects & Kits";
+  const logoUrl = storeData.logoUrl || "";
   const whatsappNumber = storeData.whatsappNumber || "919999999999";
   const phoneDisplay = storeData.phoneDisplay || `+${whatsappNumber}`;
   const email = storeData.email || "orders@example.com";
@@ -49,6 +83,11 @@ function applyStoreContent() {
   document.title = `${brandName} Store | Electronics Projects, ESP Kits & Learning`;
   setText("[data-brand-name]", brandName);
   setText("[data-brand-subtitle]", brandSubtitle);
+  document.querySelectorAll("[data-brand-mark]").forEach((element) => {
+    element.textContent = brandName.charAt(0) || "E";
+    element.classList.toggle("has-logo", Boolean(logoUrl));
+    element.style.backgroundImage = logoUrl ? `url("${logoUrl}")` : "";
+  });
   setText("[data-feature-title]", featuredProject.title || "Smart Home Automation with ESP32");
   setText(
     "[data-feature-description]",
@@ -61,6 +100,21 @@ function applyStoreContent() {
   setHref("[data-whatsapp-link]", `https://wa.me/${whatsappNumber}`);
   setHref("[data-email-link]", `mailto:${email}`);
   setHref("[data-phone-link]", `tel:+${whatsappNumber}`);
+}
+
+function renderProjectIdeas() {
+  const ideas = storeData.projectIdeas?.length ? storeData.projectIdeas : defaultProjectIdeas;
+  projectList.innerHTML = ideas
+    .map(
+      (idea, index) => `
+        <article>
+          <span>${String(index + 1).padStart(2, "0")}</span>
+          <h3>${idea.title}</h3>
+          <p>${idea.description}</p>
+        </article>
+      `
+    )
+    .join("");
 }
 
 function rupees(value) {
@@ -165,6 +219,34 @@ function closeCartDrawer() {
   cartDrawer.setAttribute("aria-hidden", "true");
 }
 
+function buildEnquiryMessage() {
+  const name = document.querySelector("#enquiryName").value.trim();
+  const product = document.querySelector("#enquiryProduct").value.trim();
+  const message = document.querySelector("#enquiryMessage").value.trim();
+  return [
+    "New website enquiry",
+    name ? `Name: ${name}` : "",
+    product ? `Product/Project: ${product}` : "",
+    message ? `Message: ${message}` : ""
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function sendEnquiry(type) {
+  const whatsappNumber = storeData.whatsappNumber || "919999999999";
+  const email = storeData.email || "orders@example.com";
+  const message = buildEnquiryMessage();
+
+  if (type === "whatsapp") {
+    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, "_blank");
+  } else {
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(
+      "Website enquiry"
+    )}&body=${encodeURIComponent(message)}`;
+  }
+}
+
 filterTabs.forEach((button) => {
   button.addEventListener("click", () => {
     filterTabs.forEach((tab) => tab.classList.remove("is-active"));
@@ -191,6 +273,8 @@ closeCart.addEventListener("click", closeCartDrawer);
 cartDrawer.addEventListener("click", (event) => {
   if (event.target === cartDrawer) closeCartDrawer();
 });
+sendWhatsappEnquiry.addEventListener("click", () => sendEnquiry("whatsapp"));
+sendEmailEnquiry.addEventListener("click", () => sendEnquiry("email"));
 
 featureButton.addEventListener("click", () => {
   const productId = storeData.featuredProject?.productId || 1;
@@ -198,5 +282,6 @@ featureButton.addEventListener("click", () => {
 });
 
 applyStoreContent();
+renderProjectIdeas();
 renderProducts();
 renderCart();

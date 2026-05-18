@@ -69,6 +69,12 @@ a {
   background: linear-gradient(135deg, var(--brand), var(--accent));
 }
 
+.brand-mark.has-logo {
+  background-position: center;
+  background-size: cover;
+  color: transparent;
+}
+
 .brand strong,
 .brand small {
   display: block;
@@ -554,6 +560,26 @@ a {
   box-shadow: var(--shadow);
 }
 
+.enquiry-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.secondary-form-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  font-weight: 900;
+  background: #fff;
+  cursor: pointer;
+}
+
 .order-form label {
   display: grid;
   gap: 7px;
@@ -725,5 +751,9 @@ a {
 
   .feature-project img {
     min-height: 230px;
+  }
+
+  .enquiry-actions {
+    grid-template-columns: 1fr;
   }
 }

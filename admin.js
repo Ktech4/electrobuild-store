@@ -1,19 +1,52 @@
 const storageKey = "STORE_DATA_OVERRIDE";
 const githubSettingsKey = "GITHUB_PUBLISH_SETTINGS";
 const productEditor = document.querySelector("#productEditor");
+const projectEditor = document.querySelector("#projectEditor");
 const toast = document.querySelector("#toast");
+
+const defaultProjectIdeas = [
+  {
+    title: "Line Follower Robot",
+    description: "Chassis, sensors, motor driver, code, and calibration guide."
+  },
+  {
+    title: "IoT Weather Station",
+    description: "DHT sensor, OLED display, ESP8266, web dashboard, and enclosure plan."
+  },
+  {
+    title: "RFID Attendance System",
+    description: "RFID module, LCD, buzzer, Google Sheet logging, and support video."
+  }
+];
 
 let data = loadData();
 let githubSettings = loadGithubSettings();
 
 function loadData() {
+  const defaultData = structuredClone(window.STORE_DATA || {});
   try {
     const savedData = localStorage.getItem(storageKey);
-    if (savedData) return JSON.parse(savedData);
+    if (savedData) {
+      return {
+        ...defaultData,
+        ...JSON.parse(savedData),
+        featuredProject: {
+          ...(defaultData.featuredProject || {}),
+          ...(JSON.parse(savedData).featuredProject || {})
+        },
+        products: JSON.parse(savedData).products?.length ? JSON.parse(savedData).products : defaultData.products || [],
+        projectIdeas: JSON.parse(savedData).projectIdeas?.length
+          ? JSON.parse(savedData).projectIdeas
+          : defaultData.projectIdeas || defaultProjectIdeas
+      };
+    }
   } catch (error) {
     console.warn("Saved admin data could not be loaded.", error);
   }
-  return structuredClone(window.STORE_DATA || {});
+  return {
+    ...defaultData,
+    projectIdeas: defaultData.projectIdeas?.length ? defaultData.projectIdeas : defaultProjectIdeas
+  };
 }
 
 function showToast(message) {
@@ -33,6 +66,7 @@ function setInput(id, value) {
 function fillForm() {
   setInput("brandName", data.brandName);
   setInput("brandSubtitle", data.brandSubtitle);
+  setInput("logoUrl", data.logoUrl);
   setInput("whatsappNumber", data.whatsappNumber);
   setInput("phoneDisplay", data.phoneDisplay);
   setInput("email", data.email);
@@ -46,6 +80,7 @@ function fillForm() {
   setInput("githubPath", githubSettings.path || "content.js");
   setInput("githubToken", githubSettings.token);
   renderProducts();
+  renderProjects();
 }
 
 function loadGithubSettings() {
@@ -78,6 +113,7 @@ function collectGithubSettings() {
 function collectForm() {
   data.brandName = inputValue("brandName");
   data.brandSubtitle = inputValue("brandSubtitle");
+  data.logoUrl = inputValue("logoUrl");
   data.whatsappNumber = inputValue("whatsappNumber").replace(/[^\d]/g, "");
   data.phoneDisplay = inputValue("phoneDisplay");
   data.email = inputValue("email");
@@ -88,6 +124,7 @@ function collectForm() {
     productId: Number(inputValue("featureProductId")) || 1
   };
   collectProducts();
+  collectProjects();
 }
 
 function renderProducts() {
@@ -161,6 +198,39 @@ function collectProducts() {
   }));
 }
 
+function renderProjects() {
+  data.projectIdeas = data.projectIdeas || [];
+  projectEditor.innerHTML = data.projectIdeas
+    .map(
+      (project, index) => `
+        <article class="product-card" data-project-index="${index}">
+          <h3>Project ${index + 1}: ${escapeHtml(project.title || "New Project")}</h3>
+          <label class="wide">
+            Project Title
+            <input data-field="title" type="text" value="${escapeAttribute(project.title)}">
+          </label>
+          <label class="wide">
+            Project Description
+            <textarea data-field="description">${escapeHtml(project.description)}</textarea>
+          </label>
+          <div class="product-actions">
+            <button type="button" data-project-action="up">Move Up</button>
+            <button type="button" data-project-action="down">Move Down</button>
+            <button class="danger" type="button" data-project-action="remove">Remove</button>
+          </div>
+        </article>
+      `
+    )
+    .join("");
+}
+
+function collectProjects() {
+  data.projectIdeas = Array.from(document.querySelectorAll("[data-project-index]")).map((card) => ({
+    title: card.querySelector('[data-field="title"]').value.trim(),
+    description: card.querySelector('[data-field="description"]').value.trim()
+  }));
+}
+
 function addProduct() {
   collectForm();
   const nextId = Math.max(0, ...data.products.map((product) => Number(product.id) || 0)) + 1;
@@ -178,6 +248,17 @@ function addProduct() {
   showToast("Product added.");
 }
 
+function addProject() {
+  collectForm();
+  data.projectIdeas = data.projectIdeas || [];
+  data.projectIdeas.push({
+    title: "New Project Idea",
+    description: "Write project details here."
+  });
+  renderProjects();
+  showToast("Project added.");
+}
+
 function moveProduct(index, direction) {
   collectForm();
   const targetIndex = index + direction;
@@ -192,6 +273,22 @@ function removeProduct(index) {
   data.products.splice(index, 1);
   renderProducts();
   showToast("Product removed.");
+}
+
+function moveProject(index, direction) {
+  collectForm();
+  const targetIndex = index + direction;
+  if (targetIndex < 0 || targetIndex >= data.projectIdeas.length) return;
+  const [project] = data.projectIdeas.splice(index, 1);
+  data.projectIdeas.splice(targetIndex, 0, project);
+  renderProjects();
+}
+
+function removeProject(index) {
+  collectForm();
+  data.projectIdeas.splice(index, 1);
+  renderProjects();
+  showToast("Project removed.");
 }
 
 function savePreview() {
@@ -292,6 +389,7 @@ function escapeAttribute(value = "") {
 }
 
 document.querySelector("#addProductButton").addEventListener("click", addProduct);
+document.querySelector("#addProjectButton").addEventListener("click", addProject);
 document.querySelector("#previewButton").addEventListener("click", savePreview);
 document.querySelector("#exportButton").addEventListener("click", exportContentFile);
 document.querySelector("#publishButton").addEventListener("click", publishToGithub);
@@ -306,6 +404,18 @@ productEditor.addEventListener("click", (event) => {
   if (action === "up") moveProduct(index, -1);
   if (action === "down") moveProduct(index, 1);
   if (action === "remove") removeProduct(index);
+});
+
+projectEditor.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-project-action]");
+  if (!button) return;
+  const card = button.closest("[data-project-index]");
+  const index = Number(card.dataset.projectIndex);
+  const action = button.dataset.projectAction;
+
+  if (action === "up") moveProject(index, -1);
+  if (action === "down") moveProject(index, 1);
+  if (action === "remove") removeProject(index);
 });
 
 fillForm();

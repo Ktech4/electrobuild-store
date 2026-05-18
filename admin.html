@@ -36,6 +36,10 @@
             Brand Subtitle
             <input id="brandSubtitle" type="text" />
           </label>
+          <label class="wide">
+            Logo Image Link
+            <input id="logoUrl" type="url" placeholder="https://example.com/logo.png" />
+          </label>
           <label>
             WhatsApp Number
             <input id="whatsappNumber" type="text" placeholder="919999999999" />
@@ -111,12 +115,24 @@
         <div class="panel-heading with-action">
           <div>
             <h2>Products</h2>
-            <p>Add, edit, remove, and reorder your products.</p>
+            <p>Add unlimited products. Use the button anytime you need more than 8.</p>
           </div>
           <button class="secondary" id="addProductButton" type="button">Add Product</button>
         </div>
 
         <div class="product-editor" id="productEditor"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading with-action">
+          <div>
+            <h2>Project Ideas</h2>
+            <p>Add extra project cards for robotics, IoT, ESP, Arduino, and student projects.</p>
+          </div>
+          <button class="secondary" id="addProjectButton" type="button">Add Project</button>
+        </div>
+
+        <div class="product-editor" id="projectEditor"></div>
       </section>
     </main>
 

@@ -14,7 +14,7 @@
   <body>
     <header class="site-header">
       <a class="brand" href="#home" aria-label="ElectroBuild Store home">
-        <span class="brand-mark">E</span>
+        <span class="brand-mark" data-brand-mark>E</span>
         <span>
           <strong data-brand-name>ElectroBuild</strong>
           <small data-brand-subtitle>Projects & Kits</small>
@@ -125,22 +125,7 @@
             </div>
           </article>
 
-          <div class="project-list">
-            <article>
-              <span>01</span>
-              <h3>Line Follower Robot</h3>
-              <p>Chassis, sensors, motor driver, code, and calibration guide.</p>
-            </article>
-            <article>
-              <span>02</span>
-              <h3>IoT Weather Station</h3>
-              <p>DHT sensor, OLED display, ESP8266, web dashboard, and enclosure plan.</p>
-            </article>
-            <article>
-              <span>03</span>
-              <h3>RFID Attendance System</h3>
-              <p>RFID module, LCD, buzzer, Google Sheet logging, and support video.</p>
-            </article>
+          <div class="project-list" id="projectList">
           </div>
         </div>
       </section>
@@ -177,17 +162,20 @@
         <form class="order-form">
           <label>
             Name
-            <input type="text" placeholder="Your name" />
+            <input id="enquiryName" type="text" placeholder="Your name" />
           </label>
           <label>
             Product / Project
-            <input type="text" placeholder="ESP32 kit, robot project..." />
+            <input id="enquiryProduct" type="text" placeholder="ESP32 kit, robot project..." />
           </label>
           <label>
             Message
-            <textarea placeholder="Tell us what you need"></textarea>
+            <textarea id="enquiryMessage" placeholder="Tell us what you need"></textarea>
           </label>
-          <button class="primary-btn" type="button">Send Enquiry</button>
+          <div class="enquiry-actions">
+            <button class="primary-btn" id="sendWhatsappEnquiry" type="button">Send WhatsApp</button>
+            <button class="secondary-form-btn" id="sendEmailEnquiry" type="button">Send Email</button>
+          </div>
         </form>
       </section>
     </main>
