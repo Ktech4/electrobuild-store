@@ -7,15 +7,30 @@ const toast = document.querySelector("#toast");
 const defaultProjectIdeas = [
   {
     title: "Line Follower Robot",
-    description: "Chassis, sensors, motor driver, code, and calibration guide."
+    description: "Chassis, sensors, motor driver, code, and calibration guide.",
+    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=900&q=80",
+    images: [],
+    videoUrl: "",
+    longDescription: "Complete robotics project idea with parts planning, wiring approach, code support, and tuning guidance.",
+    specs: ["IR sensor based tracking", "Motor driver control", "Student project friendly"]
   },
   {
     title: "IoT Weather Station",
-    description: "DHT sensor, OLED display, ESP8266, web dashboard, and enclosure plan."
+    description: "DHT sensor, OLED display, ESP8266, web dashboard, and enclosure plan.",
+    image: "https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=900&q=80",
+    images: [],
+    videoUrl: "",
+    longDescription: "IoT weather station project with local display, cloud dashboard option, and sensor reading workflow.",
+    specs: ["ESP8266/ESP32 compatible", "Temperature and humidity display", "Dashboard option"]
   },
   {
     title: "RFID Attendance System",
-    description: "RFID module, LCD, buzzer, Google Sheet logging, and support video."
+    description: "RFID module, LCD, buzzer, Google Sheet logging, and support video.",
+    image: "https://images.unsplash.com/photo-1562408590-e32931084e23?auto=format&fit=crop&w=900&q=80",
+    images: [],
+    videoUrl: "",
+    longDescription: "RFID attendance project concept for schools and colleges with card scanning, display, and logging support.",
+    specs: ["RFID card scan", "LCD/buzzer feedback", "Attendance logging idea"]
   }
 ];
 
@@ -34,10 +49,8 @@ function loadData() {
           ...(defaultData.featuredProject || {}),
           ...(JSON.parse(savedData).featuredProject || {})
         },
-        products: JSON.parse(savedData).products?.length ? JSON.parse(savedData).products : defaultData.products || [],
-        projectIdeas: JSON.parse(savedData).projectIdeas?.length
-          ? JSON.parse(savedData).projectIdeas
-          : defaultData.projectIdeas || defaultProjectIdeas
+        products: mergeProducts(defaultData.products || [], JSON.parse(savedData).products || []),
+        projectIdeas: mergeProjects(defaultData.projectIdeas || defaultProjectIdeas, JSON.parse(savedData).projectIdeas || [])
       };
     }
   } catch (error) {
@@ -45,8 +58,39 @@ function loadData() {
   }
   return {
     ...defaultData,
+    products: defaultData.products || [],
     projectIdeas: defaultData.projectIdeas?.length ? defaultData.projectIdeas : defaultProjectIdeas
   };
+}
+
+function mergeProducts(defaultProducts, savedProducts) {
+  if (!savedProducts.length) return defaultProducts;
+  return savedProducts.map((product) => {
+    const defaultProduct = defaultProducts.find((item) => item.id === product.id) || {};
+    return {
+      ...defaultProduct,
+      ...product,
+      images: product.images?.length ? product.images : defaultProduct.images || [],
+      longDescription: product.longDescription || defaultProduct.longDescription || product.description || "",
+      specs: product.specs?.length ? product.specs : defaultProduct.specs || []
+    };
+  });
+}
+
+function mergeProjects(defaultProjects, savedProjects) {
+  if (!savedProjects.length) return defaultProjects;
+  return savedProjects.map((project, index) => {
+    const defaultProject = defaultProjects[index] || {};
+    return {
+      ...defaultProject,
+      ...project,
+      image: project.image || defaultProject.image || "",
+      images: project.images?.length ? project.images : defaultProject.images || [],
+      videoUrl: project.videoUrl || defaultProject.videoUrl || "",
+      longDescription: project.longDescription || defaultProject.longDescription || project.description || "",
+      specs: project.specs?.length ? project.specs : defaultProject.specs || []
+    };
+  });
 }
 
 function showToast(message) {
@@ -166,8 +210,24 @@ function renderProducts() {
             <input data-field="image" type="url" value="${escapeAttribute(product.image)}">
           </label>
           <label class="wide">
-            Description
+            More Image Links
+            <textarea data-field="images" placeholder="Add 4 to 6 product image links, one per line">${escapeHtml((product.images || []).join("\n"))}</textarea>
+          </label>
+          <label class="wide">
+            YouTube Video Link
+            <input data-field="videoUrl" type="url" value="${escapeAttribute(product.videoUrl)}">
+          </label>
+          <label class="wide">
+            Short Description
             <textarea data-field="description">${escapeHtml(product.description)}</textarea>
+          </label>
+          <label class="wide">
+            Full Product Description
+            <textarea data-field="longDescription" placeholder="Long professional details for the product page">${escapeHtml(product.longDescription)}</textarea>
+          </label>
+          <label class="wide">
+            Specifications
+            <textarea data-field="specs" placeholder="One specification per line">${escapeHtml((product.specs || []).join("\n"))}</textarea>
           </label>
           <div class="product-actions">
             <button type="button" data-action="up">Move Up</button>
@@ -194,8 +254,19 @@ function collectProducts() {
     rating: card.querySelector('[data-field="rating"]').value.trim(),
     tag: card.querySelector('[data-field="tag"]').value.trim(),
     image: card.querySelector('[data-field="image"]').value.trim(),
-    description: card.querySelector('[data-field="description"]').value.trim()
+    images: linesFromTextarea(card.querySelector('[data-field="images"]').value),
+    videoUrl: card.querySelector('[data-field="videoUrl"]').value.trim(),
+    description: card.querySelector('[data-field="description"]').value.trim(),
+    longDescription: card.querySelector('[data-field="longDescription"]').value.trim(),
+    specs: linesFromTextarea(card.querySelector('[data-field="specs"]').value)
   }));
+}
+
+function linesFromTextarea(value) {
+  return value
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
 }
 
 function renderProjects() {
@@ -213,6 +284,26 @@ function renderProjects() {
             Project Description
             <textarea data-field="description">${escapeHtml(project.description)}</textarea>
           </label>
+          <label class="wide">
+            Main Project Image Link
+            <input data-field="image" type="url" value="${escapeAttribute(project.image)}">
+          </label>
+          <label class="wide">
+            More Project Image Links
+            <textarea data-field="images" placeholder="Add 4 to 6 project image links, one per line">${escapeHtml((project.images || []).join("\n"))}</textarea>
+          </label>
+          <label class="wide">
+            YouTube Video Link
+            <input data-field="videoUrl" type="url" value="${escapeAttribute(project.videoUrl)}">
+          </label>
+          <label class="wide">
+            Full Project Details
+            <textarea data-field="longDescription" placeholder="Full professional project details">${escapeHtml(project.longDescription)}</textarea>
+          </label>
+          <label class="wide">
+            Parts / Specifications
+            <textarea data-field="specs" placeholder="One part or specification per line">${escapeHtml((project.specs || []).join("\n"))}</textarea>
+          </label>
           <div class="product-actions">
             <button type="button" data-project-action="up">Move Up</button>
             <button type="button" data-project-action="down">Move Down</button>
@@ -227,7 +318,12 @@ function renderProjects() {
 function collectProjects() {
   data.projectIdeas = Array.from(document.querySelectorAll("[data-project-index]")).map((card) => ({
     title: card.querySelector('[data-field="title"]').value.trim(),
-    description: card.querySelector('[data-field="description"]').value.trim()
+    description: card.querySelector('[data-field="description"]').value.trim(),
+    image: card.querySelector('[data-field="image"]').value.trim(),
+    images: linesFromTextarea(card.querySelector('[data-field="images"]').value),
+    videoUrl: card.querySelector('[data-field="videoUrl"]').value.trim(),
+    longDescription: card.querySelector('[data-field="longDescription"]').value.trim(),
+    specs: linesFromTextarea(card.querySelector('[data-field="specs"]').value)
   }));
 }
 
@@ -242,7 +338,11 @@ function addProduct() {
     rating: "4.8",
     tag: "New",
     image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
-    description: "Write product details here."
+    images: [],
+    videoUrl: "",
+    description: "Write product details here.",
+    longDescription: "Add full product details, included parts, use cases, and delivery notes.",
+    specs: ["Tested before shipping", "Video support available"]
   });
   renderProducts();
   showToast("Product added.");
@@ -253,7 +353,12 @@ function addProject() {
   data.projectIdeas = data.projectIdeas || [];
   data.projectIdeas.push({
     title: "New Project Idea",
-    description: "Write project details here."
+    description: "Write project details here.",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
+    images: [],
+    videoUrl: "",
+    longDescription: "Add full project details, working explanation, included parts, code support, and delivery notes.",
+    specs: ["Parts list available", "Video support available", "Custom build option"]
   });
   renderProjects();
   showToast("Project added.");

@@ -9,7 +9,7 @@
       content="Professional electronics project storefront for ESP, Arduino, IoT kits, modules, tutorials, and ready-to-buy project bundles."
     />
     <link rel="preconnect" href="https://images.unsplash.com" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=10" />
   </head>
   <body>
     <header class="site-header">
@@ -100,13 +100,51 @@
         <div class="product-grid" id="productGrid" aria-live="polite"></div>
       </section>
 
+      <section class="section product-detail-section" id="productDetail" hidden>
+        <button class="back-btn" id="backToProducts" type="button">Back to Products</button>
+        <div class="detail-layout">
+          <div class="detail-media">
+            <img id="detailImage" src="" alt="" />
+            <div class="detail-video" id="detailVideoBox"></div>
+          </div>
+          <div class="detail-copy">
+            <span class="badge" id="detailTag">Product</span>
+            <h2 id="detailName">Product Name</h2>
+            <p id="detailDescription"></p>
+            <div class="detail-price-row">
+              <strong id="detailPrice">₹0</strong>
+              <span id="detailRating">Star 4.8</span>
+            </div>
+            <div class="detail-actions">
+              <button class="primary-btn" id="detailAddCart" type="button">Add to Cart</button>
+              <a class="secondary-form-btn" id="detailBuyWhatsapp" href="https://wa.me/919999999999" target="_blank" rel="noreferrer">
+                Buy on WhatsApp
+              </a>
+            </div>
+            <div class="detail-section" id="detailFullDescriptionBox">
+              <h3>Product Details</h3>
+              <p id="detailFullDescription"></p>
+            </div>
+            <div class="detail-section" id="detailSpecsBox">
+              <h3>Specifications</h3>
+              <ul id="detailSpecs"></ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="section project-section" id="projects">
         <div class="section-heading">
           <div>
             <p class="eyebrow">Build Library</p>
             <h2>Project Scaling Ideas</h2>
           </div>
-          <a class="text-link" href="#contact">Request custom project</a>
+          <div class="quick-actions">
+            <a class="text-link" href="https://wa.me/919999999999" target="_blank" rel="noreferrer" data-custom-whatsapp>
+              Request custom project
+            </a>
+            <a class="text-link muted-link" href="mailto:orders@example.com" data-custom-email>Email request</a>
+          </div>
         </div>
 
         <div class="project-layout">
@@ -173,8 +211,8 @@
             <textarea id="enquiryMessage" placeholder="Tell us what you need"></textarea>
           </label>
           <div class="enquiry-actions">
-            <button class="primary-btn" id="sendWhatsappEnquiry" type="button">Send WhatsApp</button>
-            <button class="secondary-form-btn" id="sendEmailEnquiry" type="button">Send Email</button>
+            <a class="primary-btn" id="sendWhatsappEnquiry" href="https://wa.me/919999999999" target="_blank" rel="noreferrer">Send WhatsApp</a>
+            <a class="secondary-form-btn" id="sendEmailEnquiry" href="mailto:orders@example.com">Send Email</a>
           </div>
         </form>
       </section>
@@ -195,11 +233,27 @@
           <span>Total</span>
           <strong id="cartTotal">₹0</strong>
         </div>
-        <a class="primary-btn full" href="https://wa.me/919999999999" target="_blank" rel="noreferrer" data-whatsapp-link>
+        <a class="primary-btn full" id="checkoutWhatsapp" href="https://wa.me/919999999999" target="_blank" rel="noreferrer">
           Checkout on WhatsApp
         </a>
       </div>
     </aside>
+
+    <div class="video-modal" id="videoModal" aria-hidden="true">
+      <div class="video-panel" role="dialog" aria-modal="true" aria-label="Project video">
+        <button class="icon-btn ghost video-close" id="closeVideo" type="button" aria-label="Close video">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+        <iframe
+          id="videoFrame"
+          title="Project video"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
 
     <script src="content.js"></script>
     <script src="app.js"></script>
