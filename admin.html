@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Store Admin | ElectroBuild</title>
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <header class="admin-header">
+      <div>
+        <p>Store Admin</p>
+        <h1>Edit Website Content</h1>
+      </div>
+      <nav>
+        <a href="index.html">View Website</a>
+        <button id="previewButton" type="button">Save Preview</button>
+        <button id="exportButton" type="button">Download Update File</button>
+        <button id="publishButton" type="button">Publish to GitHub</button>
+      </nav>
+    </header>
+
+    <main class="admin-shell">
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>Business Details</h2>
+          <p>Update your brand, contact, WhatsApp, and YouTube information.</p>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            Brand Name
+            <input id="brandName" type="text" />
+          </label>
+          <label>
+            Brand Subtitle
+            <input id="brandSubtitle" type="text" />
+          </label>
+          <label>
+            WhatsApp Number
+            <input id="whatsappNumber" type="text" placeholder="919999999999" />
+          </label>
+          <label>
+            Phone Display
+            <input id="phoneDisplay" type="text" placeholder="+91 99999 99999" />
+          </label>
+          <label>
+            Email
+            <input id="email" type="email" />
+          </label>
+          <label>
+            YouTube Link
+            <input id="youtubeUrl" type="url" />
+          </label>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>GitHub Auto Update</h2>
+          <p>Enter your repository details once, then publish changes directly to GitHub Pages.</p>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            GitHub Username
+            <input id="githubOwner" type="text" placeholder="your-github-username" />
+          </label>
+          <label>
+            Repository Name
+            <input id="githubRepo" type="text" placeholder="electrobuild-store" />
+          </label>
+          <label>
+            Branch
+            <input id="githubBranch" type="text" value="main" />
+          </label>
+          <label>
+            File Path
+            <input id="githubPath" type="text" value="content.js" />
+          </label>
+          <label class="wide">
+            GitHub Token
+            <input id="githubToken" type="password" placeholder="Fine-grained token with Contents read/write" />
+          </label>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>Featured Project</h2>
+          <p>This section appears in the project highlight area.</p>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            Featured Title
+            <input id="featureTitle" type="text" />
+          </label>
+          <label>
+            Product ID To Add
+            <input id="featureProductId" type="number" min="1" />
+          </label>
+          <label class="wide">
+            Featured Description
+            <textarea id="featureDescription"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading with-action">
+          <div>
+            <h2>Products</h2>
+            <p>Add, edit, remove, and reorder your products.</p>
+          </div>
+          <button class="secondary" id="addProductButton" type="button">Add Product</button>
+        </div>
+
+        <div class="product-editor" id="productEditor"></div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="content.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>

@@ -1,85 +1,15 @@
-const products = [
-  {
-    id: 1,
-    name: "ESP32 Smart Home Kit",
-    category: "kit",
-    price: 1499,
-    rating: "4.9",
-    tag: "Hot",
-    image: "https://images.unsplash.com/photo-1553406830-ef2513450d76?auto=format&fit=crop&w=800&q=80",
-    description: "Relay, ESP32, jumper wires, mobile control guide, and code support."
-  },
-  {
-    id: 2,
-    name: "Arduino Robot Car Bundle",
-    category: "project",
-    price: 1899,
-    rating: "4.8",
-    tag: "Ready",
-    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80",
-    description: "Chassis, wheels, L298N driver, sensors, battery holder, and tutorial."
-  },
-  {
-    id: 3,
-    name: "ESP8266 IoT Starter Pack",
-    category: "kit",
-    price: 899,
-    rating: "4.7",
-    tag: "Value",
-    image: "https://images.unsplash.com/photo-1603732551658-5fabbafa84eb?auto=format&fit=crop&w=800&q=80",
-    description: "NodeMCU, breadboard, LEDs, resistors, sensors, and cloud dashboard demo."
-  },
-  {
-    id: 4,
-    name: "Sensor Module Collection",
-    category: "module",
-    price: 699,
-    rating: "4.6",
-    tag: "10 pcs",
-    image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
-    description: "IR, ultrasonic, DHT, soil moisture, LDR, flame, buzzer, and more."
-  },
-  {
-    id: 5,
-    name: "RFID Attendance Project",
-    category: "project",
-    price: 2199,
-    rating: "4.8",
-    tag: "School",
-    image: "https://images.unsplash.com/photo-1562408590-e32931084e23?auto=format&fit=crop&w=800&q=80",
-    description: "RFID reader, cards, LCD, buzzer, code, wiring, and report format."
-  },
-  {
-    id: 6,
-    name: "OLED Display Module",
-    category: "module",
-    price: 249,
-    rating: "4.7",
-    tag: "I2C",
-    image: "https://images.unsplash.com/photo-1555617981-dac3880eac6e?auto=format&fit=crop&w=800&q=80",
-    description: "Compact OLED screen for ESP, Arduino, weather, clock, and menu projects."
-  },
-  {
-    id: 7,
-    name: "Mini Weather Station Kit",
-    category: "project",
-    price: 1299,
-    rating: "4.9",
-    tag: "IoT",
-    image: "https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=800&q=80",
-    description: "ESP8266, DHT sensor, OLED, code, enclosure suggestion, and dashboard."
-  },
-  {
-    id: 8,
-    name: "Relay Control Module 4CH",
-    category: "module",
-    price: 399,
-    rating: "4.5",
-    tag: "4CH",
-    image: "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=800&q=80",
-    description: "For automation projects, fan/light control, pumps, and IoT switching."
+function getStoreData() {
+  try {
+    const savedData = localStorage.getItem("STORE_DATA_OVERRIDE");
+    if (savedData) return JSON.parse(savedData);
+  } catch (error) {
+    console.warn("Could not load saved admin preview data.", error);
   }
-];
+  return window.STORE_DATA || {};
+}
+
+const storeData = getStoreData();
+const products = storeData.products || [];
 
 const productGrid = document.querySelector("#productGrid");
 const searchInput = document.querySelector("#searchInput");
@@ -94,6 +24,44 @@ const featureButton = document.querySelector("[data-add-feature]");
 
 let activeFilter = "all";
 let cart = [];
+
+function setText(selector, value) {
+  document.querySelectorAll(selector).forEach((element) => {
+    element.textContent = value;
+  });
+}
+
+function setHref(selector, value) {
+  document.querySelectorAll(selector).forEach((element) => {
+    element.href = value;
+  });
+}
+
+function applyStoreContent() {
+  const brandName = storeData.brandName || "ElectroBuild";
+  const brandSubtitle = storeData.brandSubtitle || "Projects & Kits";
+  const whatsappNumber = storeData.whatsappNumber || "919999999999";
+  const phoneDisplay = storeData.phoneDisplay || `+${whatsappNumber}`;
+  const email = storeData.email || "orders@example.com";
+  const youtubeUrl = storeData.youtubeUrl || "https://www.youtube.com/";
+  const featuredProject = storeData.featuredProject || {};
+
+  document.title = `${brandName} Store | Electronics Projects, ESP Kits & Learning`;
+  setText("[data-brand-name]", brandName);
+  setText("[data-brand-subtitle]", brandSubtitle);
+  setText("[data-feature-title]", featuredProject.title || "Smart Home Automation with ESP32");
+  setText(
+    "[data-feature-description]",
+    featuredProject.description ||
+      "A complete electronics project package with wiring, code, and tutorial support."
+  );
+  setText("[data-email-link]", email);
+  setText("[data-phone-link]", phoneDisplay);
+  setHref("[data-youtube-link]", youtubeUrl);
+  setHref("[data-whatsapp-link]", `https://wa.me/${whatsappNumber}`);
+  setHref("[data-email-link]", `mailto:${email}`);
+  setHref("[data-phone-link]", `tel:+${whatsappNumber}`);
+}
 
 function rupees(value) {
   return new Intl.NumberFormat("en-IN", {
@@ -125,7 +93,7 @@ function renderProducts() {
           <div class="product-body">
             <div class="product-meta">
               <span class="badge">${product.tag}</span>
-              <span class="rating">★ ${product.rating}</span>
+              <span class="rating">Star ${product.rating}</span>
             </div>
             <h3>${product.name}</h3>
             <p>${product.description}</p>
@@ -178,7 +146,7 @@ function renderCart() {
                 <img src="${item.image}" alt="${item.name}">
                 <div>
                   <h3>${item.name}</h3>
-                  <p>${item.quantity} × ${rupees(item.price)}</p>
+                  <p>${item.quantity} x ${rupees(item.price)}</p>
                 </div>
                 <button type="button" data-remove-id="${item.id}">Remove</button>
               </article>
@@ -224,7 +192,11 @@ cartDrawer.addEventListener("click", (event) => {
   if (event.target === cartDrawer) closeCartDrawer();
 });
 
-featureButton.addEventListener("click", () => addToCart(1));
+featureButton.addEventListener("click", () => {
+  const productId = storeData.featuredProject?.productId || 1;
+  addToCart(productId);
+});
 
+applyStoreContent();
 renderProducts();
 renderCart();
