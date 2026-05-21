@@ -21,11 +21,11 @@ window.STORE_DATA = {
       "price": 2499,
       "rating": "4.8",
       "tag": "New",
-      "image": "https://drive.google.com/file/d/1U_U_yEjdzCbhV-bFsOes6b5kdzeD2CbE/preview",
+      "image": "https://drive.google.com/thumbnail?id=1U_U_yEjdzCbhV-bFsOes6b5kdzeD2CbE&sz=w1000",
       "images": [
-        "https://drive.google.com/file/d/1wKo2WmuNBx6-9Xitjt_j1Y4YcwieIZgr/preview",
-        "https://drive.google.com/file/d/1Puvry0USdUdxSqj8ksnZXpF0o5McxOHu/preview",
-        "https://drive.google.com/file/d/1MfpMr1F1cewSifY3OfT_oD8M2YscQQsT/preview"
+        "https://drive.google.com/thumbnail?id=1wKo2WmuNBx6-9Xitjt_j1Y4YcwieIZgr&sz=w1000",
+        "https://drive.google.com/thumbnail?id=1Puvry0USdUdxSqj8ksnZXpF0o5McxOHu&sz=w1000",
+        "https://drive.google.com/thumbnail?id=1MfpMr1F1cewSifY3OfT_oD8M2YscQQsT&sz=w1000"
       ],
       "videoUrl": "https://youtu.be/gnO0Pm5P6Xo?si=ksFietFACj4arRQZ",
       "description": "🛠 Components Used:\n✔ Arduino UNO\n✔ L293 Motor Driver\n✔ Bluetooth Module HC-05\n✔ 12V Lithium Battery\n✔ 4 Wheel Drive Chassis\n✔ DC Motors\n\n✨ Features:\n📱 Mobile controlled\n⚡ Rechargeable battery\n🚗 4 wheel drive\n📡 Bluetooth control\n🔧 DIY electronics project",
