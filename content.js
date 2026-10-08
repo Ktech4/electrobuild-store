@@ -12,7 +12,47 @@ window.STORE_DATA = {
     "description": "A complete package for lights, fan relay, mobile control, Blynk dashboard, and YouTube tutorial integration. Good for students, hobbyists, and local installation.",
     "productId": 1
   },
-  "projectIdeas": [],
+  "projectIdeas": [
+    {
+      "title": "Line Follower Robot",
+      "description": "Chassis, sensors, motor driver, code, and calibration guide.",
+      "image": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=900&q=80",
+      "images": [],
+      "videoUrl": "",
+      "longDescription": "Complete robotics project idea with parts planning, wiring approach, code support, and tuning guidance.",
+      "specs": [
+        "IR sensor based tracking",
+        "Motor driver control",
+        "Student project friendly"
+      ]
+    },
+    {
+      "title": "IoT Weather Station",
+      "description": "DHT sensor, OLED display, ESP8266, web dashboard, and enclosure plan.",
+      "image": "https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=900&q=80",
+      "images": [],
+      "videoUrl": "",
+      "longDescription": "IoT weather station project with local display, cloud dashboard option, and sensor reading workflow.",
+      "specs": [
+        "ESP8266/ESP32 compatible",
+        "Temperature and humidity display",
+        "Dashboard option"
+      ]
+    },
+    {
+      "title": "RFID Attendance System",
+      "description": "RFID module, LCD, buzzer, Google Sheet logging, and support video.",
+      "image": "https://images.unsplash.com/photo-1562408590-e32931084e23?auto=format&fit=crop&w=900&q=80",
+      "images": [],
+      "videoUrl": "",
+      "longDescription": "RFID attendance project concept for schools and colleges with card scanning, display, and logging support.",
+      "specs": [
+        "RFID card scan",
+        "LCD/buzzer feedback",
+        "Attendance logging idea"
+      ]
+    }
+  ],
   "products": [
     {
       "id": 1,
@@ -505,7 +545,7 @@ window.STORE_DATA = {
     }
   ],
   "classSettings": {
-    "upiId": "",
+    "upiId": "kaviyarasu432000kavi-1@okhdfcbank",
     "telegramUrl": "",
     "membershipMonthly": 299,
     "membershipYearly": 2499,
