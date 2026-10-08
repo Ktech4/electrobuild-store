@@ -123,6 +123,13 @@ function fillForm() {
   setInput("githubBranch", githubSettings.branch || "main");
   setInput("githubPath", githubSettings.path || "content.js");
   setInput("githubToken", githubSettings.token);
+  const cs = data.classSettings || {};
+  setInput("upiId", cs.upiId);
+  setInput("telegramUrl", cs.telegramUrl);
+  setInput("memberMonthly", cs.membershipMonthly);
+  setInput("memberYearly", cs.membershipYearly);
+  setInput("classIntro", cs.intro);
+  setInput("coursesJson", JSON.stringify(data.courses || [], null, 2));
   renderProducts();
   renderProjects();
 }
@@ -169,6 +176,20 @@ function collectForm() {
   };
   collectProducts();
   collectProjects();
+  data.classSettings = {
+    upiId: inputValue("upiId"),
+    telegramUrl: inputValue("telegramUrl"),
+    membershipMonthly: Number(inputValue("memberMonthly")) || 0,
+    membershipYearly: Number(inputValue("memberYearly")) || 0,
+    intro: inputValue("classIntro")
+  };
+  try {
+    const parsed = JSON.parse(document.querySelector("#coursesJson").value || "[]");
+    if (!Array.isArray(parsed)) throw new Error("not a list");
+    data.courses = parsed;
+  } catch (error) {
+    showToast("Courses JSON has an error, so courses were not changed. Fix it and save again.");
+  }
 }
 
 function renderProducts() {
